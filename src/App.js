@@ -1,8 +1,10 @@
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css"
+import PostCrud from "./components/postCrud";
 
 function App() {
   return (
     <div className="App">
-       <h1>Hello Anurag How are you!</h1>
+       <PostCrud />
     </div>
   );
 }
