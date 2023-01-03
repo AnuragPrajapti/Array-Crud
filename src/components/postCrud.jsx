@@ -13,6 +13,9 @@ import { useForm } from "react-hook-form";
 import "./style.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+import { ToastContainer, toast } from 'react-toastify';
+
+
 const PostCrud = () => {
   const {
     register,
@@ -33,20 +36,29 @@ const PostCrud = () => {
   };
 
   const onSubmit = (postValue) => {
+    setLoader(true);
     if (isEdit) {
       getData[response].title = postValue?.title;
       getData[response].description = postValue?.description;
+      toast.success("Update Post Success",{
+         position : "top-center",
+      })
     } else {
       const data = [...getData, postValue];
       setGetData(data);
       // getData.push(postValue)
+      toast.success("Add Post Success",{
+        position : "top-center",
+     })
     }
     reset();
   };
   const handleDelete = (id) => {
     //   console.log(555, id)
     getData.splice(id, 1);
-    alert("Delete User");
+    toast.warn("Delete Post",{
+        position : "top-center",
+     })
     reset();
   };
 
@@ -58,6 +70,10 @@ const PostCrud = () => {
     setValue("description", editValue?.description);
     setResponse(id);
   };
+
+  setTimeout(() => {
+    setLoader(false);
+  }, 2000);
 
   return (
     <div className="container-wrapper">
@@ -159,14 +175,21 @@ const PostCrud = () => {
                       Description is required
                     </p>
                   )}
-                  {isEdit ? (
-                    <Button className="form-button" type="submit">
-                      Update_Post
-                    </Button>
+                  {loader === true ? (
+                    <Spinner animation="border" style={{ display : "block" }}  />
                   ) : (
-                    <Button className="form-button" type="submit">
-                      Add_Post
-                    </Button>
+                    <div>
+                      {" "}
+                      {isEdit ? (
+                        <Button className="form-button" type="submit">
+                          Update_Post
+                        </Button>
+                      ) : (
+                        <Button className="form-button" type="submit">
+                          Add_Post
+                        </Button>
+                      )}{" "}
+                    </div>
                   )}
                 </Form>
               </Modal.Body>
@@ -178,6 +201,7 @@ const PostCrud = () => {
             </Modal>
           </Col>
         </Row>
+        <ToastContainer autoClose={1500} />
       </Container>
     </div>
   );
