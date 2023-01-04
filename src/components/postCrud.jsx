@@ -40,12 +40,14 @@ const PostCrud = () => {
     if (isEdit) {
       getData[response].title = postValue?.title;
       getData[response].description = postValue?.description;
+      setShow(false);
       toast.success("Update Post Success",{
          position : "top-center",
       })
     } else {
       const data = [...getData, postValue];
       setGetData(data);
+      setShow(false);
       // getData.push(postValue)
       toast.success("Add Post Success",{
         position : "top-center",
@@ -87,14 +89,14 @@ const PostCrud = () => {
             reset();
           }}
         >
-          Add_Post
+          AddPost
         </Button>
         <Row className="table-wrapper">
           <Col>
             <Table striped bordered hover variant="dark">
               <thead>
                 <tr>
-                  <th>Post-Id</th>
+                  <th>Id</th>
                   <th>Title</th>
                   <th>Description</th>
                   <th>Delete</th>
@@ -106,7 +108,7 @@ const PostCrud = () => {
                     return (
                       <tbody key={index}>
                         <tr>
-                          <th>{index}</th>
+                          <th>{index + 1}</th>
                           <th>{item?.title}</th>
                           <th>{item?.description}</th>
                           <td onClick={() => handleDelete(index)}>
@@ -134,9 +136,9 @@ const PostCrud = () => {
             <Modal show={show} onHide={handleClose}>
               <Modal.Header>
                 {isEdit ? (
-                  <Modal.Title>Update_Post</Modal.Title>
+                  <Modal.Title>Update Post</Modal.Title>
                 ) : (
-                  <Modal.Title>Add_Post</Modal.Title>
+                  <Modal.Title>Add Post</Modal.Title>
                 )}
               </Modal.Header>
               <Modal.Body>
@@ -182,11 +184,11 @@ const PostCrud = () => {
                       {" "}
                       {isEdit ? (
                         <Button className="form-button" type="submit">
-                          Update_Post
+                          Update Post
                         </Button>
                       ) : (
                         <Button className="form-button" type="submit">
-                          Add_Post
+                          Add Post
                         </Button>
                       )}{" "}
                     </div>
