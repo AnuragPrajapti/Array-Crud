@@ -39,33 +39,33 @@ const CreatePost = () => {
   const [response, setResponse] = useState(false);
   const [isId, setIsId] = useState();
   const dispatch = useDispatch();
+  // const getAllUsersData = useSelector((state) => state?.userData);
+  // const successMessage = useSelector((state) => state?.message);
+  // const deleteMessage = useSelector((state) => state?.deleteMessage);
+  // const getEditDataById = useSelector((state) => state?.getEditDataById);
+  // const errorMessage = useSelector((state) => state?.errorMessage);
+  // const userData = useSelector((state) => state?.data);
+  // const isLoader = useSelector( (state) => state?.loading )
+  const state = useSelector( (state) => state )
 
-  const getAllUsersData = useSelector((state) =>
-    state?.userData ? state?.userData : []
-  );
-  const successMessage = useSelector((state) => state?.message);
-  const deleteMessage = useSelector((state) => state?.deleteMessage);
-  const getEditDataById = useSelector((state) => state?.getEditDataById);
-  const errorMessage = useSelector((state) => state?.errorMessage);
-  const userData = useSelector((state) => state?.data);
+  console.log(state)
 
-  console.log(1111, getAllUsersData);
   const handleShow = () => {
     setShow(true);
   };
 
   useEffect(() => {
     dispatch(getUserData());
-  }, [userData]);
+  }, [state?.data]);
 
   useEffect(() => {
-    if (deleteMessage) {
-      toast.error(deleteMessage, {
+    if (state?.deleteMessage) {
+      toast.error(state?.deleteMessage, {
         position: "top-center",
         autoClose: 1500,
       });
     }
-  }, [deleteMessage]);
+  }, [state?.deleteMessage]);
 
   const onSubmit = (postValue) => {
     const updateData = { postValue, isId };
@@ -78,22 +78,27 @@ const CreatePost = () => {
       dispatch(getCreatePost(postValue));
       // dispatch(getUserData());
       setShow(false);
+      if (state?.message) {
+        toast.success(state?.message, {
+          position: "top-center",
+        });
+      }
     }
     reset();
   };
 
   useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage, {
+    if (state?.message) {
+      toast.success(state?.message, {
         position: "top-center",
       });
     }
-    if (errorMessage) {
-      toast.error(errorMessage, {
+    if (state?.errorMessage) {
+      toast.error(state?.errorMessage, {
         position: "top-center",
       });
     }
-  }, [successMessage, errorMessage]);
+  }, [state?.message, state?.errorMessage]);
 
   const handleDelete = (id) => {
     dispatch(getDeleteUser(id));
@@ -109,10 +114,10 @@ const CreatePost = () => {
   };
 
   useEffect(() => {
-    setValue("name", getEditDataById?.name);
-    setValue("age", getEditDataById?.age);
-    setValue("city", getEditDataById?.city);
-  }, [getEditDataById]);
+    setValue("name", state?.getEditDataById?.name);
+    setValue("age", state?.getEditDataById?.age);
+    setValue("city", state?.getEditDataById?.city);
+  }, [state?.getEditDataById]);
 
   setTimeout(() => {
     setLoader(false);
@@ -134,6 +139,8 @@ const CreatePost = () => {
         </Button>
         <Row className="table-wrapper">
           <Col>
+           {
+             state?.loading ? <Spinner animation="border" variant="primary" /> : 
             <Table striped bordered hover variant="dark">
               <thead>
                 <tr>
@@ -145,8 +152,8 @@ const CreatePost = () => {
                   <th>Edit</th>
                 </tr>
               </thead>
-              {getAllUsersData.length > 0
-                ? getAllUsersData?.map((item, index) => {
+              {state?.userData.length > 0
+                ? state?.userData?.map((item, index) => {
                     return (
                       <tbody key={index}>
                         <tr>
@@ -171,7 +178,8 @@ const CreatePost = () => {
                   })
                 : ""}
             </Table>
-          </Col>
+           }
+           </Col>
         </Row>
 
         <Row className="form-wrapper">
@@ -267,16 +275,7 @@ const CreatePost = () => {
             </Modal>
           </Col>
         </Row>
-        <ToastContainer
-          autoClose={1500}
-          hideProgressBar={false}
-          newestOnTop={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
+        <ToastContainer autoClose={1500}   />
       </Container>
     </div>
   );

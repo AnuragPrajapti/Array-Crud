@@ -84,7 +84,7 @@ export const getUpdateUser = createAsyncThunk(
   "post/update",
   async (data, { fulfillWithValue, rejectWithValue }) => {
     const id = data?.isId;
-    const  updateData = data?.postValue;
+    const updateData = data?.postValue;
     const response = await axios.put(
       `${process.env.REACT_APP_API_KEY}/update/${id}`,
       updateData
@@ -105,7 +105,7 @@ export const getUpdateUser = createAsyncThunk(
 
 const initialState = {
   loading: false,
-  data : [],
+  data: [],
   userData: [],
   error: false,
   message: "",
@@ -133,6 +133,7 @@ const createApiSlice = createSlice({
       .addCase(getCreatePost.rejected, (state) => {
         state.error = true;
         state.errorMessage = "User Already exists";
+        state.loading = false;
       });
     builder
       .addCase(getUserData.pending, (state) => {
@@ -143,7 +144,6 @@ const createApiSlice = createSlice({
         state.loading = false;
         state.error = false;
         state.userData = action.payload;
-        // state.message = "Get Users Data successfully";
       })
       .addCase(getUserData.rejected, (state) => {
         state.error = true;
