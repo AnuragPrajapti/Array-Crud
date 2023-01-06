@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import img from "../../assets/img.webp";
 import "./Register.css";
 import { NavLink } from "react-router-dom";
-import { Spinner } from "react-bootstrap";
+import { Button, Spinner , Container } from "react-bootstrap";
 
 const SignUp = () => {
   const [loader, setLoader] = useState(false);
@@ -13,7 +13,9 @@ const SignUp = () => {
     reset,
     formState: { errors },
   } = useForm();
+
   const onSubmit = (data) => {
+    console.log(111,data)
     reset();
     setLoader(true);
   };
@@ -24,7 +26,7 @@ const SignUp = () => {
   }, 3000);
 
   return (
-    <section className="container">
+    <Container>
       <div className="register">
         <div className="registerForm">
           <form
@@ -86,7 +88,7 @@ const SignUp = () => {
             {loader ? (
               <Spinner animation="border" />
             ) : (
-              <button className="btn">Register</button>
+              <Button className="btn" type="submit" >Register</Button>
             )}
             <p className="mt-3">
               Alredy Have an Accout?
@@ -94,14 +96,13 @@ const SignUp = () => {
                 <NavLink to="/login">Login</NavLink>
               </span>{" "}
             </p>
-            <p>&copy; All Right Reserved....</p>
           </form>
         </div>
         <div className="registerImage">
           <img src={img} alt="img" />
         </div>
       </div>
-    </section>
+    </Container>
   );
 };
 
