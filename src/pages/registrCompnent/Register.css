@@ -32,6 +32,10 @@
   display: block;
 }
 
+#form input{
+  padding: 15px !important;
+}
+
 #form > input:focus{
   outline: none;
 }

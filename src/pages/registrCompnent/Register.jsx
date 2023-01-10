@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import img from "../../assets/img.webp";
 import "./Register.css";
 import { NavLink } from "react-router-dom";
-import { Button, Spinner , Container } from "react-bootstrap";
+import { Button, Spinner, Container } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { getRegisterUser } from "../../services/userSlice";
+import { toast } from "react-toastify";
 
-const SignUp = () => {
+const RegisterForm = () => {
+  const dispatch = useDispatch()
   const [loader, setLoader] = useState(false);
   const {
     register,
@@ -13,12 +17,29 @@ const SignUp = () => {
     reset,
     formState: { errors },
   } = useForm();
+  const state = useSelector(state => state)
+  const [message, setMessage] = useState(state.message)
+
+  console.log(222, state);
+
 
   const onSubmit = (data) => {
-    console.log(111,data)
+    console.log(111, data)
+    dispatch(getRegisterUser(data))
     reset();
     setLoader(true);
   };
+
+  useEffect(() => {
+    if (message) {
+      toast.success(message, {
+        position: "top-center",
+        autoClose: 1500,
+      })
+    }
+    setMessage("")
+  }, [message])
+
 
   //Spinner Functionality
   setTimeout(() => {
@@ -38,11 +59,11 @@ const SignUp = () => {
             <hr></hr>
             <input
               type="text"
-              {...register("name", { required: true })}
+              {...register("firstName", { required: true })}
               placeholder="FullName"
             />
-            {errors.name?.type === "required" && (
-              <p className="error-style">Please enter name...</p>
+            {errors.firstName?.type === "required" && (
+              <p className="error-style">Please enter FullName...</p>
             )}
             <input
               type="email"
@@ -63,9 +84,9 @@ const SignUp = () => {
             {errors.password?.type === "maxLength" && (
               <p className="error-style">Password maxLength is 8</p>
             )}
-            <input type="date" {...register("date", { required: true })} />
-            {errors.date?.type === "required" && (
-              <p className="error-style">Please enter Date...</p>
+            <input type="test" {...register("address", { required: true })} placeholder="Enter Address" />
+            {errors.address?.type === "required" && (
+              <p className="error-style">Please enter address...</p>
             )}
             <input
               type="number"
@@ -106,4 +127,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default RegisterForm;
