@@ -1,6 +1,55 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
+
+export const getRegisterUser = createAsyncThunk(
+  "getRegisterUser",
+  async (data, { fulfillWithValue, rejectWithValue }) => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_KEY}/register`,
+      data
+    );
+    try {
+      if (response.status === 200) {
+        console.log(111, response.data);
+        return fulfillWithValue(response.data);
+      }
+    } catch (error) {
+      if (error.response.state === 404) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue(error);
+      }
+    }
+  }
+);
+
+export const getLoginUser = createAsyncThunk(
+  "getLoginUser",
+  async (data, { fulfillWithValue, rejectWithValue }) => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_KEY}/login`,
+      data
+    );
+    try {
+      if (response.status === 200) {
+        console.log(111, response.data);
+        localStorage.setItem("authToken", JSON.stringify(response.data.token));
+        return fulfillWithValue(response.data);
+      }
+    } catch (error) {
+      if (error.response.state === 404) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue(error);
+      }
+    }
+  }
+);
+
+
+
 export const getCreatePost = createAsyncThunk(
   "post/create",
   async (data, { fulfillWithValue, rejectWithValue }) => {
@@ -22,12 +71,21 @@ export const getCreatePost = createAsyncThunk(
   }
 );
 
+
 export const getUserData = createAsyncThunk(
   "getUserDAta",
   async (emty, { fulfillWithValue, rejectWithValue }) => {
-    const response = await axios.get(`${process.env.REACT_APP_API_KEY}/get`);
+    const Token =  JSON.parse(localStorage.getItem("authToken")) 
+    const config = {
+      headers :  {
+        Authorization: `Bearer ${Token}`,
+      }
+    }
+    
+    const response = await axios.get(`${process.env.REACT_APP_API_KEY}/get`,config);
     try {
       if (response.status === 201) {
+        console.log(response.data);
         return fulfillWithValue(response.data);
       }
     } catch (error) {
@@ -103,6 +161,7 @@ export const getUpdateUser = createAsyncThunk(
   }
 );
 
+
 const initialState = {
   loading: false,
   data: [],
@@ -112,6 +171,8 @@ const initialState = {
   errorMessage: "",
   deleteMessage: "",
   getEditDataById: [],
+  getRegisterData: [] | null,
+  getLoginData: [] | null,
 };
 
 const createApiSlice = createSlice({
@@ -190,6 +251,36 @@ const createApiSlice = createSlice({
       .addCase(getUpdateUser.rejected, (state) => {
         state.error = true;
         state.errorMessage = "somthin wrong";
+      });
+    builder
+      .addCase(getRegisterUser.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getRegisterUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.getRegisterData = action.payload;
+        state.message = "user Register Successfuly!";
+        console.log("fullfiled", action.payload);
+      })
+      .addCase(getRegisterUser.rejected, (state) => {
+        state.error = true;
+      });
+    builder
+      .addCase(getLoginUser.pending, (state) => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getLoginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.getLoginData = action.payload;
+        state.message = "user Login Successfuly!";
+        console.log("fullfiled", action.payload);
+      })
+      .addCase(getLoginUser.rejected, (state) => {
+        state.error = true;
       });
   },
 });

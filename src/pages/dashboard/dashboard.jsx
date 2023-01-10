@@ -10,7 +10,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import "./createPost.css";
+import "./dashboard.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { ToastContainer, toast } from "react-toastify";
@@ -23,8 +23,9 @@ import {
   getUserData,
 } from "../../services/userSlice";
 import { useEffect } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
-const CreatePost = () => {
+const Dashboard = () => {
   const {
     register,
     reset,
@@ -39,15 +40,8 @@ const CreatePost = () => {
   const [response, setResponse] = useState(false);
   const [isId, setIsId] = useState();
   const dispatch = useDispatch();
-  // const getAllUsersData = useSelector((state) => state?.userData);
-  // const successMessage = useSelector((state) => state?.message);
-  // const deleteMessage = useSelector((state) => state?.deleteMessage);
-  // const getEditDataById = useSelector((state) => state?.getEditDataById);
-  // const errorMessage = useSelector((state) => state?.errorMessage);
-  // const userData = useSelector((state) => state?.data);
-  // const isLoader = useSelector( (state) => state?.loading )
-  const state = useSelector( (state) => state )
-
+  const state = useSelector((state) => state)
+   const navigate = useNavigate()
   console.log(state)
 
   const handleShow = () => {
@@ -81,6 +75,7 @@ const CreatePost = () => {
       if (state?.message) {
         toast.success(state?.message, {
           position: "top-center",
+          autoClose: 1500
         });
       }
     }
@@ -96,6 +91,7 @@ const CreatePost = () => {
     if (state?.errorMessage) {
       toast.error(state?.errorMessage, {
         position: "top-center",
+        autoClose: 1500
       });
     }
   }, [state?.message, state?.errorMessage]);
@@ -119,6 +115,13 @@ const CreatePost = () => {
     setValue("city", state?.getEditDataById?.city);
   }, [state?.getEditDataById]);
 
+
+
+  const handleLogout = () =>{
+    localStorage.removeItem("authToken")
+    navigate('/')
+  }
+
   setTimeout(() => {
     setLoader(false);
   }, 2000);
@@ -139,47 +142,51 @@ const CreatePost = () => {
         </Button>
         <Row className="table-wrapper">
           <Col>
-           {
-             state?.loading ? <Spinner animation="border" variant="primary" /> : 
-            <Table striped bordered hover variant="dark">
-              <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>Age</th>
-                  <th>City</th>
-                  <th>Delete</th>
-                  <th>Edit</th>
-                </tr>
-              </thead>
-              {state?.userData.length > 0
-                ? state?.userData?.map((item, index) => {
-                    return (
-                      <tbody key={index}>
-                        <tr>
-                          <th>{index + 1}</th>
-                          <th>{item?.name}</th>
-                          <th>{item?.age}</th>
-                          <th>{item?.city}</th>
-                          <td onClick={() => handleDelete(item?._id)}>
-                            <DeleteIcon style={{ color: "red" }} />
-                          </td>
-                          <td
-                            onClick={() => {
-                              handleEdit(item?._id);
-                              handleShow();
-                            }}
-                          >
-                            <BorderColorIcon style={{ color: "green" }} />
-                          </td>
-                        </tr>
-                      </tbody>
-                    );
-                  })
-                : ""}
-            </Table>
-           }
-           </Col>
+            {
+              state?.loading ? <Spinner animation="border" variant="primary" /> :
+                <Table striped bordered hover variant="dark">
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Name</th>
+                      <th>Age</th>
+                      <th>City</th>
+                      <th>Delete</th>
+                      <th>Edit</th>
+                    </tr>
+                  </thead>
+                  {state?.userData.length > 0
+                    ? state?.userData?.map((item, index) => {
+                      return (
+                        <tbody key={index}>
+                          <tr>
+                            <th>{index + 1}</th>
+                            <th>{item?.name}</th>
+                            <th>{item?.age}</th>
+                            <th>{item?.city}</th>
+                            <td onClick={() => handleDelete(item?._id)}>
+                              <DeleteIcon style={{ color: "red" }} />
+                            </td>
+                            <td
+                              onClick={() => {
+                                handleEdit(item?._id);
+                                handleShow();
+                              }}
+                            >
+                              <BorderColorIcon style={{ color: "green" }} />
+                            </td>
+                          </tr>
+                        </tbody>
+                      );
+                    })
+                    : ""}
+                </Table>
+            }
+            <p>
+              secured Logout?{" "}
+              <span><button onClick={()=>handleLogout()} className="logout-button" >logout</button> </span>{" "}
+            </p>
+          </Col>
         </Row>
 
         <Row className="form-wrapper">
@@ -275,10 +282,10 @@ const CreatePost = () => {
             </Modal>
           </Col>
         </Row>
-        <ToastContainer autoClose={1500}   />
+        <ToastContainer autoClose={1500} />
       </Container>
     </div>
   );
 };
 
-export default CreatePost;
+export default Dashboard;
